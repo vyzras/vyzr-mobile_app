@@ -1,0 +1,1 @@
+export const baseUrl = 'http://vyzrbackend.mashup.li/v1/';
