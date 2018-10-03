@@ -5,21 +5,26 @@ class OverviewCard extends Component {
   render() {
     const { smallCardView, textStyle, cirleView } = styles
     return (
-      <View style={smallCardView}>
-        <Text style={[textStyle, { fontSize: 18, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', marginBottom: 3 }]}>{this.props.title}</Text>
-        <Text style={[textStyle, { fontSize: 14, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', marginBottom: 8 }]}>{this.props.company}</Text>
+      <View style={smallCardView }>
+        <View style= {{flex: 0.8}}>
+          <Text style={[textStyle, { fontSize: 18, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', marginBottom: 3 }]}>{this.props.title}</Text>
+          <Text style={[textStyle, { fontSize: 12, fontFamily: Platform.OS === 'ios' ? 'Avenir-Medium' : 'Avenir-Medium', fontWeight: '400' }]}>{this.props.date}</Text>
+        </View>
+        <View style={{flex: 0.2, justifyContent: 'center', alignItems: 'flex-end'}}>
+         <View style={[cirleView, { backgroundColor: this.props.color }]}></View>
+        </View>
+        {/* <Text style={[textStyle, { fontSize: 14, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', marginBottom: 8 }]}>{this.props.company}</Text> */}
 
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <View >
+        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}> */}
+          {/* <View >
             <Text style={[textStyle, { fontSize: 12, fontFamily: Platform.OS === 'ios' ? 'Avenir-Medium' : 'Avenir-Medium', marginBottom: 3 }]}>By: <Text style={{ fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold' }}>{this.props.sender}</Text></Text>
             <Text style={[textStyle, { fontSize: 12, fontFamily: Platform.OS === 'ios' ? 'Avenir-Medium' : 'Avenir-Medium', fontWeight: '400' }]}>{this.props.date}</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}>
-            <View style={[cirleView, { backgroundColor: this.props.color }]}>
-            </View>
-            <Text style={{ fontSize: 16, color: this.props.color, fontFamily: Platform.OS === 'ios' ? 'Avenir-Medium' : 'Avenir-Medium' }}>{this.props.status}</Text>
-          </View>
-        </View>
+          </View> */}
+          {/* <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 10 }}> */}
+            
+            {/* <Text style={{ fontSize: 16, color: this.props.color, fontFamily: Platform.OS === 'ios' ? 'Avenir-Medium' : 'Avenir-Medium' }}>{this.props.status}</Text> */}
+          {/* </View> */}
+        {/* </View> */}
       </View>
     )
   }
@@ -28,6 +33,7 @@ class OverviewCard extends Component {
 const styles = StyleSheet.create({
   smallCardView: {
     flex:1,
+    flexDirection: 'row',
     backgroundColor: '#4a4a4a',
     paddingVertical: 15,
     paddingHorizontal: 25,

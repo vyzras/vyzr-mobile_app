@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity, Alert, Platform, AsyncStorage } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity, Alert, Platform, AsyncStorage,Dimensions } from 'react-native';
 import { Header, Footer, Input, Spinner } from '../Components';
 import PhotoUpload from 'react-native-photo-upload';
 import { connect } from 'react-redux';
 import { createFeedbackFunction, createFeedbackResetStates, getOverviewFunction } from '../actions';
 import { baseUrl } from '../config/BaseUrl';
+const { width, height } = Dimensions.get('window');
 var d = new Date()
 var showDate = d.toString().split(' ')[0] + " " + d.getHours() + ":" + d.getMinutes();
 class Registration extends Component {
@@ -66,7 +67,7 @@ class Registration extends Component {
         }}
       >
         {
-          <Image source={this.imageSource()} resizeMode="contain" style={{ width: 200, height: 120 }} />
+          <Image source={this.imageSource()} resizeMode='contain' style={{ width: width, height: 145 }} />
         }
       </PhotoUpload>
     )
@@ -142,8 +143,8 @@ class Registration extends Component {
               :
               null
             }
-            <View style={{ justifyContent: 'flex-end', alignItems: 'flex-end', marginTop: 30 }} >
-              <Text style={{ color: '#fff', right: 120, top: -2, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold' }}>{showDate}</Text>
+            <View style={{ marginTop: 30 }} >
+              {/* <Text style={{ color: '#fff', right: 120, top: -2, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold' }}>{showDate}</Text> */}
               {this.photoUpload()}
             </View>
             {this.props.CreateFeedbackStates.loading ?
@@ -152,8 +153,8 @@ class Registration extends Component {
               </View>
               :
 
-              <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 30 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ marginTop: 30 }}>
+                {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <TouchableOpacity style={checkBoxStyle}
                     onPress={() => {
                       this.setState({ checked: !this.state.checked })
@@ -162,10 +163,9 @@ class Registration extends Component {
                     {this.state.checked ? <Image source={require('../assets/images/tick.png')} style={{ height: 18, width: 18 }} /> : null}
                   </TouchableOpacity>
                   <Text style={{ marginLeft: 10, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 16, color: '#fff' }}>Anonymous</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <Text style={{ marginRight: 10, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 16, color: '#fff' }}>Send feedback</Text>
+                </View> */}
                   <TouchableOpacity
+                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#fff', padding: 10, borderRadius: 8 }}
                     onPress={() => {
                       if (this.state.title === null) {
                         this.setState({ title: '' })
@@ -185,9 +185,9 @@ class Registration extends Component {
                       }
                     }}
                   >
+                    <Text style={{ marginRight: 10, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 16, color: '#fff' }}>Send feedback</Text>
                     <Image source={require('../assets/images/sent.png')} style={{ height: 20, width: 20 }} />
                   </TouchableOpacity>
-                </View>
 
               </View>
             }
@@ -196,6 +196,7 @@ class Registration extends Component {
         <Footer
           backgroundColor="#4a4a4a"
           borderTopColor="#f5f5f5"
+          screen={'Register'}
           home={() => { this.props.navigation.navigate('HomeScreen') }}
           overview={() => {
             this.setState({ title: null, description: null, avatar: null })

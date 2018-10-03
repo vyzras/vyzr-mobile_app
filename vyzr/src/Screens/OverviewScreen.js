@@ -75,19 +75,15 @@ class OverviewScreen extends Component {
                   title={data.title}
                   company={data.description}
                   sender={data.user_name ? date.user_name : "Anonymous"}
-                  date={this.dateFormat(data.updated_at)}
+                  date={this.dateFormat(data.created_at)}
                   color={
-                    data.status === "Resolved"
+                    data.complete_percentage * 100 === 1
                       ?
                       "#7fb787"
                       :
-                      data.status === "Registered" ?
+                      data.complete_percentage * 100 === 0 ?
                         '#c65d5d'
-                        :
-                        data.status === "Under review" ?
-                          '#eadc79'
-                          :
-                          "#fff"
+                        : "#fff"
                   }
                   status={data.status}
                 />
@@ -124,7 +120,7 @@ class OverviewScreen extends Component {
           }
         >
           <View style={{padding: 15, paddingBottom: 70 }}>
-            <View style={{ paddingVertical: 15, paddingHorizontal: 40 }}>
+            {/* <View style={{ paddingVertical: 15, paddingHorizontal: 40 }}>
               <View style={tagsViewStyle}>
                 <View style={{ flexDirection: 'row', width: '50%' }}>
                   <View style={cirleView}>
@@ -155,8 +151,8 @@ class OverviewScreen extends Component {
                 </View>
 
 
-              </View>
-            </View>
+              </View> */}
+            {/* </View> */}
             <View style={{ marginLeft: 0 }}>
               {this.renderCard()}
             </View>
@@ -164,6 +160,7 @@ class OverviewScreen extends Component {
         </ScrollView>
 
         <Footer
+          screen = {'overview'}
           home={() => { this.props.navigation.navigate('HomeScreen') }}
           overview={() => { }}
           registration={() => { this.props.navigation.navigate('Registration') }}

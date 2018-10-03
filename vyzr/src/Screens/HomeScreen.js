@@ -54,6 +54,7 @@ class HomeScreen extends React.Component {
           </View>
         </ScrollView>
         <Footer
+          screen = {'home'}
           home={() => { }}
           overview={() => { this.props.navigation.navigate('OverviewScreen') }}
           registration={() => { this.props.navigation.navigate('Registration') }}

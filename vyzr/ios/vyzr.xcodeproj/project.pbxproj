@@ -791,7 +791,7 @@
 					};
 					13B07F861A680F5B00A75B9A = {
 						DevelopmentTeam = QJ3GW3B2BW;
-						ProvisioningStyle = Automatic;
+						ProvisioningStyle = Manual;
 						SystemCapabilities = {
 							com.apple.iCloud = {
 								enabled = 0;
@@ -1378,7 +1378,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				DEVELOPMENT_TEAM = QJ3GW3B2BW;
@@ -1397,8 +1398,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vyzr;
 				PRODUCT_NAME = vyzr;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "a585e8f0-f73b-490a-a499-b966c7903c7f";
+				PROVISIONING_PROFILE_SPECIFIER = "mac(28/09/2018)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -1408,7 +1409,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Automatic;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = QJ3GW3B2BW;
 				HEADER_SEARCH_PATHS = (
@@ -1426,8 +1428,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.vyzr;
 				PRODUCT_NAME = vyzr;
-				PROVISIONING_PROFILE = "";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE = "a585e8f0-f73b-490a-a499-b966c7903c7f";
+				PROVISIONING_PROFILE_SPECIFIER = "mac(28/09/2018)";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
