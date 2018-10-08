@@ -33,7 +33,7 @@ class HomeScreen extends React.Component {
                 })
                 onSignOut().then(this.props.navigation.dispatch(actionToDispatch))
               }}>
-              <Text style={{ color: '#fff', fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 18 }}>Ola Nordman</Text>
+              {this.state.user ? <Text style={{ color: '#fff', fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 18 }}>{this.state.user.email}</Text> : null}
             </TouchableOpacity>
 
             <TouchableOpacity style={cardView}
@@ -54,7 +54,7 @@ class HomeScreen extends React.Component {
           </View>
         </ScrollView>
         <Footer
-          screen = {'home'}
+          screen={'home'}
           home={() => { }}
           overview={() => { this.props.navigation.navigate('OverviewScreen') }}
           registration={() => { this.props.navigation.navigate('Registration') }}

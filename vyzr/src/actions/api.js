@@ -3,7 +3,6 @@ export function postFunctionWithAuthToken(url, body, authToken) {
   return axios.post(url, body,
     {
       headers: {
-        'Accept': 'application/json',
         'Content-Type': 'application/json',
         'Authorization': "Token token=" + authToken
       }
