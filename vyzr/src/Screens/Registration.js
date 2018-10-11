@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity, Alert, Platform, AsyncStorage,Dimensions } from 'react-native';
+import { View, StyleSheet, Image, ScrollView, Text, TouchableOpacity, Alert, Platform, AsyncStorage, Dimensions } from 'react-native';
 import { Header, Footer, Input, Spinner } from '../Components';
 import PhotoUpload from 'react-native-photo-upload';
 import { connect } from 'react-redux';
@@ -33,7 +33,7 @@ class Registration extends Component {
       if (nextProps.CreateFeedbackStates.response.data.success) {
         this.setState({ title: null, description: null, avatar: null })
         this.props.getOverviewFunction(`${baseUrl}items`, this.state.user.user_token)
-        this.props.navigation.navigate('OverviewScreen')
+        this.props.navigation.navigate('OverViewDetailScreen', nextProps.CreateFeedbackStates.response.data.data)
       }
       if (nextProps.CreateFeedbackStates.response.data.error) {
         Alert.alert(
@@ -154,40 +154,30 @@ class Registration extends Component {
               :
 
               <View style={{ marginTop: 30 }}>
-                {/* <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <TouchableOpacity style={checkBoxStyle}
-                    onPress={() => {
-                      this.setState({ checked: !this.state.checked })
-                    }}
-                  >
-                    {this.state.checked ? <Image source={require('../assets/images/tick.png')} style={{ height: 18, width: 18 }} /> : null}
-                  </TouchableOpacity>
-                  <Text style={{ marginLeft: 10, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 16, color: '#fff' }}>Anonymous</Text>
-                </View> */}
-                  <TouchableOpacity
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#fff', padding: 10, borderRadius: 8 }}
-                    onPress={() => {
-                      if (this.state.title === null) {
-                        this.setState({ title: '' })
-                      }
-                      if (this.state.description === null) {
-                        this.setState({ description: '' })
-                      }
+                <TouchableOpacity
+                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderWidth: 2, borderColor: '#fff', padding: 10, borderRadius: 8 }}
+                  onPress={() => {
+                    if (this.state.title === null) {
+                      this.setState({ title: '' })
+                    }
+                    if (this.state.description === null) {
+                      this.setState({ description: '' })
+                    }
 
-                      if (this.state.title && this.state.description) {
-                        let items = {};
-                        items['title'] = this.state.title;
-                        items['description'] = this.state.description;
-                        items['anonymous'] = this.state.checked ? "YES" : "NO"
-                        this.state.avatar ? items['image'] = this.state.avatar : null
-                        items = { items }
-                        this.props.createFeedbackFunction(`${baseUrl}items`, items, this.state.user.user_token)
-                      }
-                    }}
-                  >
-                    <Text style={{ marginRight: 10, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 16, color: '#fff' }}>Send feedback</Text>
-                    <Image source={require('../assets/images/sent.png')} style={{ height: 20, width: 20 }} />
-                  </TouchableOpacity>
+                    if (this.state.title && this.state.description) {
+                      let items = {};
+                      items['title'] = this.state.title;
+                      items['description'] = this.state.description;
+                      items['anonymous'] = this.state.checked ? "YES" : "NO"
+                      this.state.avatar ? items['image'] = this.state.avatar : null
+                      items = { items }
+                      this.props.createFeedbackFunction(`${baseUrl}items`, items, this.state.user.user_token)
+                    }
+                  }}
+                >
+                  <Text style={{ marginRight: 10, fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 16, color: '#fff' }}>Send feedback</Text>
+                  <Image source={require('../assets/images/sent.png')} style={{ height: 20, width: 20 }} />
+                </TouchableOpacity>
 
               </View>
             }

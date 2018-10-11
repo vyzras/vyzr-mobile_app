@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, AsyncStorage, TouchableOpacity, Platform, ScrollView } from 'react-native';
 import { NavigationActions, StackActions } from 'react-navigation';
-import { onSignOut } from '../actions';
+import { onSignOut, initializeForm } from '../actions';
 import { connect } from 'react-redux';
 import { Header, Footer } from '../Components'
 class HomeScreen extends React.Component {
@@ -10,6 +10,7 @@ class HomeScreen extends React.Component {
     AsyncStorage.getItem('user', (err, result) => {
       if (result !== null) {
         let user = JSON.parse(result);
+        console.log(user);
         this.setState({ user: user });
       }
     });
@@ -26,14 +27,11 @@ class HomeScreen extends React.Component {
           <View style={{ padding: 10, paddingBottom: 50 }}>
             <TouchableOpacity style={smallCardView}
               onPress={() => {
-                const actionToDispatch = StackActions.reset({
-                  index: 0,
-                  key: null,
-                  actions: [NavigationActions.navigate({ routeName: "SignedOut" })]
-                })
-                onSignOut().then(this.props.navigation.dispatch(actionToDispatch))
+                this.props.navigation.navigate('SignedOut');
+                console.log(this.state.user)
+                this.props.initializeForm('SignInForm', this.state.user);
               }}>
-              {this.state.user ? <Text style={{ color: '#fff', fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 18 }}>{this.state.user.email}</Text> : null}
+              {this.state.user ? <Text style={{ textAlign: 'center', color: '#fff', fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 18 }}>{this.state.user.email}</Text> : null}
             </TouchableOpacity>
 
             <TouchableOpacity style={cardView}
@@ -67,8 +65,6 @@ class HomeScreen extends React.Component {
 const styles = StyleSheet.create({
   smallCardView: {
     backgroundColor: '#4a4a4a',
-    alignItems: 'center',
-    justifyContent: 'center',
     padding: 30,
     borderRadius: 8,
     marginVertical: 7
@@ -90,4 +86,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect('', { onSignOut })(HomeScreen)
+export default connect('', { onSignOut, initializeForm })(HomeScreen)

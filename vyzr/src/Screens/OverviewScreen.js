@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, ScrollView, Text, StyleSheet, Platform, Keyboard, AsyncStorage, Alert, RefreshControl } from 'react-native';
+import { View, ScrollView, Text, Image, StyleSheet, TouchableOpacity, Platform, Keyboard, AsyncStorage, Alert, RefreshControl } from 'react-native';
 import { Header, OverviewCard, Footer, Spinner } from '../Components';
 import { baseUrl } from '../config/BaseUrl';
 import { getOverviewFunction, getOverviewResetStates } from '../actions';
@@ -8,12 +8,22 @@ import { connect } from 'react-redux';
 var refreshing = false;
 
 class OverviewScreen extends Component {
+  state = {
+    user: null,
+    ascOrderChecked: true,
+    descOrderChecked: false,
+    inCompleteChecked: false,
+    completeChecked: false,
+    ownCases: true,
+  }
+
   componentWillMount() {
     this.fetchData()
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.GetOverviewStates.response) {
+      console.log(nextProps.GetOverviewStates.response.data.data)
       if (nextProps.GetOverviewStates.response.data.error) {
         Alert.alert(
           "Error",
@@ -29,12 +39,12 @@ class OverviewScreen extends Component {
     }
   }
 
-  fetchData() {
+  fetchData(filter = "asc", ownCases = true) {
     AsyncStorage.getItem('user', (err, result) => {
       if (result !== null) {
         let user = JSON.parse(result);
         this.setState({ user: user });
-        this.props.getOverviewFunction(`${baseUrl}items`, user.user_token)
+        this.props.getOverviewFunction(`${baseUrl}items?order=${filter}&own=${ownCases}`, user.user_token)
       }
     });
   }
@@ -62,6 +72,7 @@ class OverviewScreen extends Component {
   }
 
   renderCard() {
+
     if (this.props.GetOverviewStates.loading) {
       return <Spinner color="#4a4a4a" />
     } else {
@@ -69,25 +80,72 @@ class OverviewScreen extends Component {
         if (this.props.GetOverviewStates.response.data.success) {
           return (
             this.props.GetOverviewStates.response.data.data.map((data, i) => {
-              return (
-                <OverviewCard
-                  key={i}
-                  title={data.title}
-                  company={data.description}
-                  sender={data.user_name ? date.user_name : "Anonymous"}
-                  date={this.dateFormat(data.created_at)}
-                  color={
-                    data.complete_percentage * 100 === 1
-                      ?
-                      "#7fb787"
-                      :
-                      data.complete_percentage * 100 === 0 ?
-                        '#c65d5d'
-                        : "#fff"
-                  }
-                  status={data.status}
-                />
-              )
+              if (!this.state.completeChecked && !this.state.inCompleteChecked) {
+                return (
+                  <OverviewCard
+                    onPress={() => this.props.navigation.navigate('OverViewDetailScreen', data)}
+                    key={i}
+                    title={data.title}
+                    company={data.description}
+                    sender={data.user_name ? date.user_name : "Anonymous"}
+                    date={this.dateFormat(data.created_time)}
+                    color={
+                      data.complete_percentage * 100 === 1
+                        ?
+                        "#7fb787"
+                        :
+                        data.complete_percentage * 100 === 0 ?
+                          '#c65d5d'
+                          : "#fff"
+                    }
+                    status={data.status}
+                  />
+                )
+              }
+              else if (this.state.completeChecked && data.complete_percentage * 100 === 1) {
+                return (
+                  <OverviewCard
+                    onPress={() => this.props.navigation.navigate('OverViewDetailScreen', data)}
+                    key={i}
+                    title={data.title}
+                    company={data.description}
+                    sender={data.user_name ? date.user_name : "Anonymous"}
+                    date={this.dateFormat(data.created_time)}
+                    color={
+                      data.complete_percentage * 100 === 1
+                        ?
+                        "#7fb787"
+                        :
+                        data.complete_percentage * 100 === 0 ?
+                          '#c65d5d'
+                          : "#fff"
+                    }
+                    status={data.status}
+                  />
+                )
+              }
+              else if (!this.state.completeChecked && data.complete_percentage * 100 === 0) {
+                return (
+                  <OverviewCard
+                    onPress={() => this.props.navigation.navigate('OverViewDetailScreen', data)}
+                    key={i}
+                    title={data.title}
+                    company={data.description}
+                    sender={data.user_name ? date.user_name : "Anonymous"}
+                    date={this.dateFormat(data.created_time)}
+                    color={
+                      data.complete_percentage * 100 === 1
+                        ?
+                        "#7fb787"
+                        :
+                        data.complete_percentage * 100 === 0 ?
+                          '#c65d5d'
+                          : "#fff"
+                    }
+                    status={data.status}
+                  />
+                )
+              }
             })
           )
         }
@@ -98,7 +156,7 @@ class OverviewScreen extends Component {
 
 
   render() {
-    const { cirleView, tagsViewStyle, textStyle } = styles;
+    const { cirleView, tagsViewStyle, textStyle, checkBoxStyle, checkBoxTextStyle } = styles;
     return (
       <View style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
         <Header
@@ -108,7 +166,7 @@ class OverviewScreen extends Component {
           onPress={() => { this.props.navigation.navigate('HomeScreen') }}
         />
         {this.refreshState()}
-        <ScrollView style={{  }}
+        <ScrollView style={{}}
           refreshControl={
             <RefreshControl
               refreshing={refreshing}
@@ -119,40 +177,100 @@ class OverviewScreen extends Component {
             />
           }
         >
-          <View style={{padding: 15, paddingBottom: 70 }}>
-            {/* <View style={{ paddingVertical: 15, paddingHorizontal: 40 }}>
+          <View style={{ padding: 15, paddingBottom: 70 }}>
+            <View style={{ paddingVertical: 15, paddingHorizontal: 40 }}>
+              <Text>Order by date:</Text>
               <View style={tagsViewStyle}>
                 <View style={{ flexDirection: 'row', width: '50%' }}>
-                  <View style={cirleView}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity style={checkBoxStyle}
+                      onPress={() => {
+                        let filter = this.state.ascOrderChecked ? "asc" : undefined
+                        this.fetchData(filter);
+                        if (this.state.descOrderChecked) {
+                          this.setState({ descOrderChecked: false });
+                        }
+                        this.setState({ ascOrderChecked: !this.state.ascOrderChecked });
+                      }}
+                    >
+                      {this.state.ascOrderChecked ? <Image source={require('../assets/images/tick.png')} style={{ height: 18, width: 18 }} /> : null}
+                    </TouchableOpacity>
+                    <Text style={checkBoxTextStyle}>Accending</Text>
                   </View>
-                  <Text style={textStyle}>All</Text>
                 </View>
 
                 <View style={{ flexDirection: 'row', width: '50%' }}>
-                  <View style={[cirleView, { backgroundColor: '#7fb787' }]}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity style={checkBoxStyle}
+                      onPress={() => {
+                        let filter = !this.state.descOrderChecked ? "desc" : undefined
+                        this.fetchData(filter);
+                        if (this.state.ascOrderChecked) {
+                          this.setState({ ascOrderChecked: false });
+                        }
+                        this.setState({ descOrderChecked: !this.state.descOrderChecked });
+                      }}
+                    >
+                      {this.state.descOrderChecked ? <Image source={require('../assets/images/tick.png')} style={{ height: 18, width: 18 }} /> : null}
+                    </TouchableOpacity>
+                    <Text style={checkBoxTextStyle}>Decending</Text>
                   </View>
-                  <Text style={textStyle}>Resolved</Text>
                 </View>
-
-
               </View>
 
+              <Text>Filter:</Text>
               <View style={tagsViewStyle}>
                 <View style={{ flexDirection: 'row', width: '50%' }}>
-                  <View style={[cirleView, { backgroundColor: '#c65d5d' }]}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity style={checkBoxStyle}
+                      onPress={() => {
+                        if (this.state.inCompleteChecked) {
+                          this.setState({ inCompleteChecked: false })
+                        }
+                        this.setState({ completeChecked: !this.state.completeChecked })
+                      }}
+                    >
+                      {this.state.completeChecked ? <Image source={require('../assets/images/tick.png')} style={{ height: 18, width: 18 }} /> : null}
+                    </TouchableOpacity>
+                    <Text style={checkBoxTextStyle}>Completed</Text>
                   </View>
-                  <Text style={textStyle}>Registered</Text>
                 </View>
 
                 <View style={{ flexDirection: 'row', width: '50%' }}>
-                  <View style={[cirleView, { backgroundColor: '#eadc79' }]}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity style={checkBoxStyle}
+                      onPress={() => {
+                        if (this.state.completeChecked) {
+                          this.setState({ completeChecked: false })
+                        }
+                        this.setState({ inCompleteChecked: !this.state.inCompleteChecked })
+                      }}
+                    >
+                      {this.state.inCompleteChecked ? <Image source={require('../assets/images/tick.png')} style={{ height: 18, width: 18 }} /> : null}
+                    </TouchableOpacity>
+                    <Text style={checkBoxTextStyle}>In Complete</Text>
                   </View>
-                  <Text style={textStyle}>Under review</Text>
+                </View>
+              </View>
+
+              <Text>Filter:</Text>
+              <View style={tagsViewStyle}>
+                <View style={{ flexDirection: 'row', width: '50%' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                    <TouchableOpacity style={checkBoxStyle}
+                      onPress={() => {
+                        this.fetchData(undefined, !this.state.ownCases);
+                        this.setState({ ownCases: !this.state.ownCases });
+                      }}
+                    >
+                      {this.state.ownCases ? <Image source={require('../assets/images/tick.png')} style={{ height: 18, width: 18 }} /> : null}
+                    </TouchableOpacity>
+                    <Text style={checkBoxTextStyle}>Own Cases</Text>
+                  </View>
                 </View>
 
-
-              </View> */}
-            {/* </View> */}
+              </View>
+            </View>
             <View style={{ marginLeft: 0 }}>
               {this.renderCard()}
             </View>
@@ -160,7 +278,7 @@ class OverviewScreen extends Component {
         </ScrollView>
 
         <Footer
-          screen = {'overview'}
+          screen={'overview'}
           home={() => { this.props.navigation.navigate('HomeScreen') }}
           overview={() => { }}
           registration={() => { this.props.navigation.navigate('Registration') }}
@@ -196,10 +314,23 @@ const styles = StyleSheet.create({
     color: '#4a4a4a',
     fontWeight: '700'
   },
+  checkBoxTextStyle: {
+    marginLeft: 10,
+    fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold',
+    fontSize: 16,
+    color: '#000'
+  },
   textStyle: {
     color: '#4a4a4a',
     fontSize: 16,
     fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold'
+  },
+  checkBoxStyle: {
+    height: 22,
+    width: 22,
+    borderWidth: 2,
+    borderColor: '#000',
+    borderRadius: 4
   }
 });
 

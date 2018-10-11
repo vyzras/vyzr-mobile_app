@@ -48,7 +48,7 @@ export function initializeForm(formName, data) {
 
 export function initializeField(formName, data) {
   return (dispatch) => {
-    dispatch(initialize(formName, data ));
+    dispatch(initialize(formName, data));
   };
 }
 

@@ -5,6 +5,7 @@ import SplashScreen from '../Screens/SplashScreen';
 import HomeScreen from '../Screens/HomeScreen';
 import OverviewScreen from '../Screens/OverviewScreen';
 import Registration from '../Screens/Registration';
+import OverViewDetailScreen from '../Screens/OverViewDetail'
 
 export const SignedIn = createStackNavigator({
   HomeScreen: {
@@ -21,6 +22,12 @@ export const SignedIn = createStackNavigator({
   },
   OverviewScreen: {
     screen: OverviewScreen,
+    navigationOptions: {
+      header: null
+    }
+  },
+  OverViewDetailScreen: {
+    screen: OverViewDetailScreen,
     navigationOptions: {
       header: null
     }

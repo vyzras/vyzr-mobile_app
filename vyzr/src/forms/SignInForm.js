@@ -3,28 +3,60 @@ import { View, StyleSheet, Text, Image } from 'react-native';
 import { connect } from 'react-redux';
 import { reduxForm, Field } from 'redux-form';
 import { Button, Input, Spinner } from '../Components';
-import { SignInFunction } from '../actions';
+import { SignInFunction, resetForm, onSignOut, initializeForm } from '../actions';
 
 class SignInForm extends Component {
   renderLoginButton() {
+    const { textView, textStyle } = styles;
     const { handleSubmit } = this.props;
-    return (
-      <View>
-        {
-          this.props.SignInStates.loading ?
-            <Spinner />
-            :
-            <Button
-              textCustomStyle={{ fontWeight: '600' }}
-              style2={{ borderColor: '#fff', borderRadius: 8 }}
-              backgroundColor={"#fff"}
-              onPress={handleSubmit}
-            >
-              Log in
+    console.log(this.props.userLogedIn)
+    if (this.props.userLogedIn) {
+      return (
+        <View>
+          {
+            this.props.SignInStates.loading ?
+              <Spinner />
+              :
+              <Button
+                textCustomStyle={{ fontWeight: '600' }}
+                style2={{ borderColor: '#fff', borderRadius: 8 }}
+                backgroundColor={"#fff"}
+                onPress={() => {
+                  onSignOut().then(() => {
+                    this.props.initializeForm('SignInForm', null)
+                    this.props.logedOut();
+                  })
+                }}
+              >
+                Logout
             </Button>
-        }
-      </View>
-    );
+          }
+
+        </View>
+      );
+    }
+    else {
+      return (
+        <View>
+          {
+            this.props.SignInStates.loading ?
+              <Spinner />
+              :
+              <Button
+                textCustomStyle={{ fontWeight: '600' }}
+                style2={{ borderColor: '#fff', borderRadius: 8 }}
+                backgroundColor={"#fff"}
+                onPress={handleSubmit}
+              >
+                Log in
+            </Button>
+          }
+          <View style={textView}>
+            <Text style={textStyle}>Forgot password? </Text>
+          </View>
+        </View>
+      );
+    }
   }
 
   renderSocialMediaButtons() {
@@ -78,6 +110,7 @@ class SignInForm extends Component {
               placeholder="USERNAME OR EMAIL"
               component={Input}
               showImage={true}
+              editable={!this.props.userLogedIn}
               imageName={require('../assets/images/user.png')}
               keyboardType='email-address'
               imageSize={15}
@@ -100,6 +133,7 @@ class SignInForm extends Component {
             <Field
               placeholder={'PASSWORD'}
               showImage={true}
+              editable={!this.props.userLogedIn}
               imageName={require('../assets/images/password.png')}
               name='password'
               component={Input}
@@ -124,9 +158,10 @@ class SignInForm extends Component {
             />
 
             <Field
-              name='list'
+              name='list_name'
               placeholder="CASE LIST"
               component={Input}
+              editable={!this.props.userLogedIn}
               showImage={true}
               imageName={null}
               keyboardType='default'
@@ -149,9 +184,10 @@ class SignInForm extends Component {
             />
 
             <Field
-              name='url'
+              name='server_url'
               placeholder="SERVER URL"
               component={Input}
+              editable={!this.props.userLogedIn}
               showImage={true}
               imageName={null}
               keyboardType='default'
@@ -176,9 +212,7 @@ class SignInForm extends Component {
 
           <View style={{ flex: 1, justifyContent: 'space-around', paddingHorizontal: 50 }} >
             {this.renderLoginButton()}
-            <View style={textView}>
-              <Text style={textStyle}>Forgot password? </Text>
-            </View>
+
           </View>
         </View>
         {/* {this.renderSocialMediaButtons()} */}
@@ -230,13 +264,13 @@ const validate = values => {
     errors.password = 'White spaces not allowed'
   }
 
-  if (!values.list) {
-    errors.list = 'Required';
-  } 
+  if (!values.list_name) {
+    errors.list_name = 'Required';
+  }
 
-  if (!values.url) {
-    errors.url = 'Required';
-  } 
+  if (!values.server_url) {
+    errors.server_url = 'Required';
+  }
 
   return errors;
 };
@@ -249,7 +283,10 @@ const mapStateToProps = ({ SignInStates }) => {
 
 SignInForm = connect(
   mapStateToProps, {
-    SignInFunction
+    SignInFunction,
+    resetForm,
+    onSignOut,
+    initializeForm
   }
 )(SignInForm);
 
