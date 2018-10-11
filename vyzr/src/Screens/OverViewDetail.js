@@ -9,7 +9,6 @@ const { width, height } = Dimensions.get('window');
 
 class OverViewDetailScreen extends Component {
   componentWillMount() {
-    console.log(this.props.navigation.state.params);
   }
 
   getStatus() {
@@ -22,7 +21,6 @@ class OverViewDetailScreen extends Component {
   }
 
   getImage() {
-    console.log("http://vyzrbackend.mashup.li/" + this.props.navigation.state.params.image_url.url)
     return "http://vyzrbackend.mashup.li" + this.props.navigation.state.params.image_url.url
   }
 

@@ -23,7 +23,6 @@ class OverviewScreen extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.GetOverviewStates.response) {
-      console.log(nextProps.GetOverviewStates.response.data.data)
       if (nextProps.GetOverviewStates.response.data.error) {
         Alert.alert(
           "Error",

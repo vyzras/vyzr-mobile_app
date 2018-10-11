@@ -9,7 +9,6 @@ class SignInForm extends Component {
   renderLoginButton() {
     const { textView, textStyle } = styles;
     const { handleSubmit } = this.props;
-    console.log(this.props.userLogedIn)
     if (this.props.userLogedIn) {
       return (
         <View>

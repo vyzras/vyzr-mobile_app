@@ -16,7 +16,6 @@ class SignInScreen extends Component {
     AsyncStorage.getItem('user-exist', (err, result) => {
       if (result !== null) {
         let user = JSON.parse(result);
-        console.log(user);
         this.setState({ user: user });
       }
     });

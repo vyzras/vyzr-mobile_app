@@ -10,7 +10,6 @@ class HomeScreen extends React.Component {
     AsyncStorage.getItem('user', (err, result) => {
       if (result !== null) {
         let user = JSON.parse(result);
-        console.log(user);
         this.setState({ user: user });
       }
     });
@@ -28,7 +27,6 @@ class HomeScreen extends React.Component {
             <TouchableOpacity style={smallCardView}
               onPress={() => {
                 this.props.navigation.navigate('SignedOut');
-                console.log(this.state.user)
                 this.props.initializeForm('SignInForm', this.state.user);
               }}>
               {this.state.user ? <Text style={{ textAlign: 'center', color: '#fff', fontFamily: Platform.OS === 'ios' ? 'AvenirLT-Black' : 'Avenir-Bold', fontSize: 18 }}>{this.state.user.email}</Text> : null}
