@@ -38,7 +38,7 @@ class OverviewScreen extends Component {
     }
   }
 
-  fetchData(filter = "asc", ownCases = true) {
+  fetchData(filter = "desc", ownCases = true) {
     AsyncStorage.getItem('user', (err, result) => {
       if (result !== null) {
         let user = JSON.parse(result);
@@ -70,7 +70,44 @@ class OverviewScreen extends Component {
     return date.getDate() + "-" + month + "-" + date.getFullYear()
   }
 
-  renderCard() {
+  renderInCompleteCard() {
+    if (this.props.GetOverviewStates.loading) {
+      return null
+    } else {
+      if (this.props.GetOverviewStates.response) {
+        if (this.props.GetOverviewStates.response.data.success) {
+          return (
+            this.props.GetOverviewStates.response.data.data.map((data, i) => {
+              if (data.complete_percentage * 100 === 0) {
+                return (
+                  <OverviewCard
+                    onPress={() => this.props.navigation.navigate('OverViewDetailScreen', data)}
+                    key={i}
+                    title={data.title}
+                    company={data.description}
+                    sender={data.user_name ? date.user_name : "Anonymous"}
+                    date={this.dateFormat(data.created_time)}
+                    color={
+                      data.complete_percentage * 100 === 1
+                        ?
+                        "#7fb787"
+                        :
+                        data.complete_percentage * 100 === 0 ?
+                          '#c65d5d'
+                          : "#fff"
+                    }
+                    status={data.status}
+                  />
+                )
+              }
+            })
+          )
+        }
+      }
+    }
+  }
+
+  renderCompletedCard() {
 
     if (this.props.GetOverviewStates.loading) {
       return <Spinner color="#4a4a4a" />
@@ -79,51 +116,7 @@ class OverviewScreen extends Component {
         if (this.props.GetOverviewStates.response.data.success) {
           return (
             this.props.GetOverviewStates.response.data.data.map((data, i) => {
-              if (!this.state.completeChecked && !this.state.inCompleteChecked) {
-                return (
-                  <OverviewCard
-                    onPress={() => this.props.navigation.navigate('OverViewDetailScreen', data)}
-                    key={i}
-                    title={data.title}
-                    company={data.description}
-                    sender={data.user_name ? date.user_name : "Anonymous"}
-                    date={this.dateFormat(data.created_time)}
-                    color={
-                      data.complete_percentage * 100 === 1
-                        ?
-                        "#7fb787"
-                        :
-                        data.complete_percentage * 100 === 0 ?
-                          '#c65d5d'
-                          : "#fff"
-                    }
-                    status={data.status}
-                  />
-                )
-              }
-              else if (this.state.completeChecked && data.complete_percentage * 100 === 1) {
-                return (
-                  <OverviewCard
-                    onPress={() => this.props.navigation.navigate('OverViewDetailScreen', data)}
-                    key={i}
-                    title={data.title}
-                    company={data.description}
-                    sender={data.user_name ? date.user_name : "Anonymous"}
-                    date={this.dateFormat(data.created_time)}
-                    color={
-                      data.complete_percentage * 100 === 1
-                        ?
-                        "#7fb787"
-                        :
-                        data.complete_percentage * 100 === 0 ?
-                          '#c65d5d'
-                          : "#fff"
-                    }
-                    status={data.status}
-                  />
-                )
-              }
-              else if (!this.state.completeChecked && data.complete_percentage * 100 === 0) {
+               if (data.complete_percentage * 100 === 1) {
                 return (
                   <OverviewCard
                     onPress={() => this.props.navigation.navigate('OverViewDetailScreen', data)}
@@ -177,7 +170,7 @@ class OverviewScreen extends Component {
           }
         >
           <View style={{ padding: 15, paddingBottom: 70 }}>
-            <View style={{ paddingVertical: 15, paddingHorizontal: 40 }}>
+            {/* <View style={{ paddingVertical: 15, paddingHorizontal: 40 }}>
               <Text>Order by date:</Text>
               <View style={tagsViewStyle}>
                 <View style={{ flexDirection: 'row', width: '50%' }}>
@@ -269,9 +262,10 @@ class OverviewScreen extends Component {
                 </View>
 
               </View>
-            </View>
+            </View> */}
             <View style={{ marginLeft: 0 }}>
-              {this.renderCard()}
+              {this.renderInCompleteCard()}
+              {this.renderCompletedCard()}
             </View>
           </View>
         </ScrollView>

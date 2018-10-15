@@ -32,8 +32,8 @@ class Registration extends Component {
     if (nextProps.CreateFeedbackStates.response) {
       if (nextProps.CreateFeedbackStates.response.data.success) {
         this.setState({ title: null, description: null, avatar: null })
-        this.props.getOverviewFunction(`${baseUrl}items`, this.state.user.user_token)
-        this.props.navigation.navigate('OverViewDetailScreen', nextProps.CreateFeedbackStates.response.data.data)
+        // this.props.getOverviewFunction(`${baseUrl}items?order=desc&own=true`, this.state.user.user_token)
+        this.props.navigation.navigate('OverviewScreen')
       }
       if (nextProps.CreateFeedbackStates.response.data.error) {
         Alert.alert(
@@ -72,6 +72,7 @@ class Registration extends Component {
       </PhotoUpload>
     )
   }
+
 
   render() {
     const { paddingContainer, checkBoxStyle } = styles;
